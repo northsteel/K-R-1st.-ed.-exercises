@@ -18,7 +18,7 @@ int main()
 				putchar(' ');
 				
 				if (numBlanksToPlace == 1)
-					numBlanksToPlace = 4;
+					numBlanksToPlace = TAB_SIZE;
 				else
 					--numBlanksToPlace;
 			}
@@ -27,7 +27,7 @@ int main()
 			putchar(charCode);
 			
 			if (numBlanksToPlace == 1 || charCode == '\n')
-				numBlanksToPlace = 4;
+				numBlanksToPlace = TAB_SIZE;
 			else
 				--numBlanksToPlace;
 		}
