@@ -4,6 +4,11 @@ where n is a parameter. Make sure your program does something intelligent
 with very long lines, and if there are no blanks or tabs before the 
 specified column */
 
+/* Program breaks the input into seperate lines based on the number of 
+characters in the input. For example, if the next character after fold
+column is a tab character that will not be printed, it still counts asctime
+TAB_SIZE characters long. */
+
 #include <stdio.h>
 
 #define MAXLINE 1000 /* Maximum input line size */
@@ -29,7 +34,7 @@ int main()
 	int numBlanksToPlace = TAB_SIZE;
 	
 	// This variable stores the number of columns we passed.
-	int numChar = 0;
+	int numInputCharsProcessed = 0;
 	
 	// This variable is the index for the line array.
 	int strIdx = 0;
@@ -38,27 +43,19 @@ int main()
 	
 	while ( (charCode = getchar()) != EOF )
 	{
-		if ( ( numChar < (foldColNum - 1) ) && strIdx != (MAXLINE - 2) && charCode != '\n')
+		if ( ( numInputCharsProcessed < (foldColNum - 1) ) && strIdx != (MAXLINE - 2) && charCode != '\n')
 		{
 			if ( charCode == ' ' || charCode == '\t' )
 			{
 				if ( canStartWithBlanks == YES )
 				{
 					line[strIdx++] = charCode;
-					
-					if ( charCode == '\t' )
-					{
-						numChar += numBlanksToPlace;
-					}
-					else
-						++numChar;
 				}
 			}
 			else
 			{
-				canStartWithBlanks == YES;
+				canStartWithBlanks = YES;
 				line[strIdx++] = charCode;
-				++numChar;
 			}
 		}
 		else
@@ -73,10 +70,11 @@ int main()
 				printf("%s\n", line);
 			}
 			
-			numChar = 0;
 			strIdx = 0;
 			if ( charCode == ' ' || charCode == '\t' )
+			{
 				canStartWithBlanks = NO;
+			}
 			else
 			{
 				canStartWithBlanks = YES;
@@ -84,15 +82,24 @@ int main()
 				if ( charCode != '\n' )
 				{
 					line[strIdx++] = charCode;
-					++numChar;
 				}
 			}
+			
+			numInputCharsProcessed = 0;
 		}
 		
 		if ( numBlanksToPlace == 1 || charCode == '\t' ||  charCode == '\n' )
 				numBlanksToPlace = TAB_SIZE;
 		else
 				--numBlanksToPlace;
+			
+		if ( charCode != '\n' )
+		{
+			if ( charCode == '\t' )
+				numInputCharsProcessed += numBlanksToPlace;
+			else
+				++numInputCharsProcessed;
+		}
 	}
 	
 	if ( strIdx > 0 )
